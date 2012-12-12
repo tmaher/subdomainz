@@ -10,7 +10,7 @@ VALUE Subdomainz = Qnil;
 
 void Init_subdomainz();
 
-VALUE method_common_subdomain(VALUE self);
+VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b);
 
 void Init_subdomainz(){
   Subdomainz = rb_define_module("Subdomainz");
