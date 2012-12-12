@@ -17,13 +17,15 @@ void Init_subdomainz(){
   rb_define_method(Subdomainz, "common_subdomain", method_common_subdomain, 2);
 }
 
-VALUE method_common_subdomain(VALUE self, VALUE a, VALUE b){
-  long alen     = strnlen(a, MAXDNSLENGTH),
+VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b){
+  char *a = StringValuePtr(rb_a);
+  char *b = StringValuePtr(rb_b);
+
+  long alen    = strnlen(a, MAXDNSLENGTH),
     blen       = strnlen(b, MAXDNSLENGTH);
   char *aptr   = alen + a,
     *bptr      = blen + b,
-    *candidate = NULL,
-    *common    = NULL;
+    *candidate = NULL;
 
   while((aptr >= a) && (bptr >= b)){
     if(*aptr != *bptr) break;
@@ -42,10 +44,9 @@ VALUE method_common_subdomain(VALUE self, VALUE a, VALUE b){
 
     aptr -= 1 ; bptr -= 1;
   }
-  if(candidate == NULL) return NULL;
-  common = calloc(strnlen(candidate, MAXDNSLENGTH), sizeof(char));
-  strncpy(common, candidate, MAXDNSLENGTH);
-  return common;
+  if(candidate == NULL) return Qnil;
+
+  return rb_str_new(candidate, strnlen(candidate, MAXDNSLENGTH));
 }
 
 #if 0
