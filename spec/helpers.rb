@@ -1,1 +1,1 @@
-$: << File.dirname(__FILE__) + '/../ext'
+$: << File.dirname(__FILE__) + '/../lib'

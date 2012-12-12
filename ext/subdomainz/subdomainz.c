@@ -14,7 +14,8 @@ VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b);
 
 void Init_subdomainz(){
   Subdomainz = rb_define_module("Subdomainz");
-  rb_define_method(Subdomainz, "common_subdomain", method_common_subdomain, 2);
+  // Subdomainz = rb_define_module("Subdomainz");
+  rb_define_singleton_method(Subdomainz, "common_subdomain", method_common_subdomain, 2);
 }
 
 VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b){
@@ -26,6 +27,7 @@ VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b){
   char *aptr   = alen + a,
     *bptr      = blen + b,
     *candidate = NULL;
+  char emptystring = '\0';
 
   while((aptr >= a) && (bptr >= b)){
     if(*aptr != *bptr) break;
@@ -44,8 +46,9 @@ VALUE method_common_subdomain(VALUE self, VALUE rb_a, VALUE rb_b){
 
     aptr -= 1 ; bptr -= 1;
   }
-  if(candidate == NULL) return Qnil;
+  if(candidate == NULL) return rb_str_new(&emptystring, 0);
 
+  if(candidate[0] == '.') candidate += 1;
   return rb_str_new(candidate, strnlen(candidate, MAXDNSLENGTH));
 }
 
