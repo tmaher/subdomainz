@@ -1,1 +1,1 @@
-require "subdomainz/subdomainz"
+
