@@ -35,9 +35,8 @@ $(LIBSUBDOMAINZ):
 		/bin/sh $(LIBSUBDOMAINZ_CONFIGURE) $(LIBSUBDOMAINZ_HOST) > /dev/null; \
 	fi
 	cd "$(LIBSUBDOMAINZ_BUILD_DIR)" && $(MAKE)
-
 else
-LIBTARGETS = $(foreach arch,$(ARCHES),"$(BUILD_DIR)"/libsubdomainz-$(arch)/.libs/libsubdomainz_convenience.a)
+LIBTARGETS = $(foreach arch,$(ARCHES))
 
 # Build a fat binary and assemble
 build_subdomainz = \
@@ -50,7 +49,7 @@ build_subdomainz = \
 	fi); \
 	env MACOSX_DEPLOYMENT_TARGET=10.4 $(MAKE) -C "$(BUILD_DIR)"/libsubdomainz-$(1)
 
-target_subdomainz = "$(BUILD_DIR)"/libsubdomainz-$(1)/.libs/libsubdomainz_convenience.a:; $(call build_subdomainz,$(1))
+target_subdomainz = $(call build_subdomainz,$(1))
 
 # Work out which arches we need to compile the lib for
 ifneq ($(findstring ppc,$(ARCHES)),)
@@ -69,8 +68,6 @@ endif
 $(LIBSUBDOMAINZ):	$(LIBTARGETS)
 	# Assemble into a FAT (x86_64, i386, ppc) library
 	@mkdir -p "$(@D)"
-	/usr/bin/libtool -static -o $@ \
-	    $(foreach arch, $(ARCHES),"$(BUILD_DIR)"/libsubdomainz-$(arch)/.libs/libsubdomainz_convenience.a)
 	@mkdir -p "$(LIBSUBDOMAINZ_BUILD_DIR)"/include
 	$(RM) "$(LIBSUBDOMAINZ_BUILD_DIR)"/include/subdomainz.h
 	@( \
